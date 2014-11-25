@@ -34,6 +34,13 @@ def defanger(infile, outfile):
             clean_line = clean_line.replace(match.group(1), clean)
         outfile.write(clean_line)
 
+def refanger(infile, outfile):
+    for line in infile.readlines():
+        dirty_line = line.replace('[.]', '.')
+        dirty_line = dirty_line.replace('hXXp', 'http')
+        dirty_line = dirty_line.replace('fXp', 'ftp')
+        outfile.write(dirty_line)
+
 def defang():
     import argparse
     parser = argparse.ArgumentParser()
@@ -43,15 +50,17 @@ def defang():
     args = parser.parse_args()
     
     try:
-        if not args.refang:
-            if args.input:
-                input_f = open(args.input)
-            else:
-                input_f = sys.stdin
-            if args.output:
-                output_f = open(args.output, 'w')
-            else:
-                output_f = sys.stdout
+        if args.input:
+            input_f = open(args.input)
+        else:
+            input_f = sys.stdin
+        if args.output:
+            output_f = open(args.output, 'w')
+        else:
+            output_f = sys.stdout
+        if args.refang:
+            refanger(input_f, output_f)
+        else:
             defanger(input_f, output_f)
     finally:
         try:
