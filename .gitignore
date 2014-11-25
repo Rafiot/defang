@@ -1,0 +1,6 @@
+syntax: glob
+*.pyc
+*.log
+build/*
+defang.egg-info/*
+dist/*
