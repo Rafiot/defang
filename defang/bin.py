@@ -5,9 +5,9 @@ from urllib2 import urlparse
 
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
-    r'((?:(?P<protocol>https?|ftp)://)'
+    r'((?:(?P<protocol>https?|ftp)://)?'
     r'(?:\S+(?::\S*)?@)?'
-    r'(?P<hostname>'
+    r'((?P<hostname>'
     r'(?!(?:10|127)(?:\.\d{1,3}){3})'
     r'(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})'
     r'(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})'
@@ -17,7 +17,7 @@ RE_URLS = re.compile(
     r'|'
     r'(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)'
     r'(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*'
-    r'(?:\.(?:[a-z\u00a1-\uffff]{2,}))'
+    r')(?P<tld>\.(?:[a-z\u00a1-\uffff]{2,}))'
     r'))'
     r'(?::\d{2,5})?'
     r'(?:/\S*)?',
@@ -28,9 +28,12 @@ def defanger(infile, outfile):
     for line in infile.readlines():
         clean_line = line
         for match in RE_URLS.finditer(line):
-            clean = match.group('protocol').replace('t', 'X')
-            clean += '://'
+            clean = ''
+            if match.group('protocol'):
+                clean += match.group('protocol').replace('t', 'X')
+                clean += '://'
             clean += match.group('hostname').replace('.', '[.]')
+            clean += match.group('tld')
             clean_line = clean_line.replace(match.group(1), clean)
         outfile.write(clean_line)
 
