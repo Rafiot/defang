@@ -32,8 +32,8 @@ def defanger(infile, outfile):
             if match.group('protocol'):
                 clean += match.group('protocol').replace('t', 'X')
                 clean += '://'
-            clean += match.group('hostname').replace('.', '[.]')
-            clean += match.group('tld')
+            clean += match.group('hostname')
+            clean += match.group('tld').replace('.', '[.]')
             clean_line = clean_line.replace(match.group(1), clean)
         outfile.write(clean_line)
 
