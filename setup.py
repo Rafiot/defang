@@ -9,7 +9,7 @@ def read(fname):
 
 setup(
     name = "defang",
-    version = "0.1.2",
+    version = "0.1.3",
     description = "Defangs and refangs malicious URLs",
     author = "Johan Nestaas",
     author_email = "johannestaas@gmail.com",
