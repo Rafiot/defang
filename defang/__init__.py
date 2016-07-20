@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import re
-from urllib2 import urlparse
 
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
@@ -24,6 +23,7 @@ RE_URLS = re.compile(
     re.IGNORECASE
 )
 
+
 def defang(line):
     clean_line = line
     for match in RE_URLS.finditer(line):
@@ -35,18 +35,21 @@ def defang(line):
         clean += match.group('tld').replace('.', '[.]')
         clean_line = clean_line.replace(match.group(1), clean)
     return clean_line
-    
+
+
 def defanger(infile, outfile):
     for line in infile:
         clean_line = defang(line)
         outfile.write(clean_line)
+
 
 def refang(line):
     dirty_line = line.replace('[.]', '.')
     dirty_line = dirty_line.replace('hXXp', 'http')
     dirty_line = dirty_line.replace('fXp', 'ftp')
     return dirty_line
-    
+
+
 def refanger(infile, outfile):
     for line in infile:
         dirty_line = refang(line)

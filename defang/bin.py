@@ -2,6 +2,7 @@
 import sys
 from defang import defanger, refanger
 
+
 def defang():
     import argparse
     parser = argparse.ArgumentParser()
@@ -9,7 +10,7 @@ def defang():
     parser.add_argument('-i', '--input', help='input file, default stdin')
     parser.add_argument('-o', '--output', help='output file, default stdout')
     args = parser.parse_args()
-    
+
     try:
         if args.input:
             input_f = open(args.input)
