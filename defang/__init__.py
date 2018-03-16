@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 import re
-from urllib2 import urlparse
+
+try:
+    from urllib2 import urlparse
+except:
+    from urllib.parse import urlparse
 
 # https://gist.github.com/dperini/729294
 RE_URLS = re.compile(
@@ -35,7 +39,7 @@ def defang(line):
         clean += match.group('tld').replace('.', '[.]')
         clean_line = clean_line.replace(match.group(1), clean)
     return clean_line
-    
+
 def defanger(infile, outfile):
     for line in infile:
         clean_line = defang(line)
@@ -48,7 +52,7 @@ def refang(line):
     if re.match(r'^f([x]{1}|[X]{1})p:', dirty_line):
         dirty_line = re.sub(r'^f([x]{1}|[X]{1})p', 'ftp', dirty_line)
     return dirty_line
-    
+
 def refanger(infile, outfile):
     for line in infile:
         dirty_line = refang(line)
