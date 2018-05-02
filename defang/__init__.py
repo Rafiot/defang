@@ -23,6 +23,8 @@ RE_URLS = re.compile(
     re.IGNORECASE
 )
 
+other_defang_http = ['purr', 'meow']
+
 
 def defang(line):
     clean_line = line
@@ -44,9 +46,14 @@ def defanger(infile, outfile):
 
 
 def refang(line):
-    dirty_line = line.replace('[.]', '.')
-    dirty_line = dirty_line.replace('hXXp', 'http')
-    dirty_line = dirty_line.replace('fXp', 'ftp')
+    dirty_line = re.sub(r'\[((\.)|((dot)|DOT))\]', '.', line)
+    if re.match(r'^h([x]{2}|[X]{2})p(s)*:', dirty_line):  # hXXP or hxxp
+        dirty_line = re.sub(r'^h([x]{2}|[X]{2})p', 'http', dirty_line)
+    if re.match(r'^f([x]{1}|[X]{1})p:', dirty_line):  # fXp or fxp
+        dirty_line = re.sub(r'^f([x]{1}|[X]{1})p', 'ftp', dirty_line)
+    for d in other_defang_http:
+        if re.match(r'^{}:'.format(d), dirty_line):
+            dirty_line = re.sub(r'^{}'.format(d), 'http', dirty_line)
     return dirty_line
 
 
